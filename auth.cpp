@@ -301,6 +301,7 @@ void displayMoneyLeaderboard(Player players[], int count) {
 
 
 int main(){
+    return 0;
 
 
     
