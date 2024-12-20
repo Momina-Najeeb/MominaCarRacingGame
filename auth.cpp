@@ -301,6 +301,15 @@ void displayMoneyLeaderboard(Player players[], int count) {
     }
 }
 
+void displayScoreLeaderboard(PlayerNode* root) {
+    if (root != NULL) {
+        displayScoreLeaderboard(root->right); // Right subtree for higher scores
+        cout << root->username << "          " << root->score << "\n";
+        displayScoreLeaderboard(root->left);  // Left subtree for lower scores
+    }
+}
+
+
 
 
 
@@ -361,11 +370,22 @@ int main() {
     Player players[MAX_PLAYERS];
     int count = readPlayersFromFile(players, MAX_PLAYERS); // Pass the array and max players
 
+    PlayerNode* root = NULL;
+    for (int i = 0; i < count; i++) {
+        root = insertPlayerBST(root, players[i].username, players[i].score);
+    }
+    
+
     if (count > 0) {
         displayMoneyLeaderboard(players, count); // Call leaderboard display
+        cout << "============ LEADERBOARD (SCORES) ============\n";
+        cout << "Username      Score\n";
+        displayScoreLeaderboard(root);
     } else {
         cout << "No players found.\n";
     }
+
+    
 }
  else {
         cout << "Exiting game.\n";
