@@ -252,7 +252,7 @@ void Merge(Player arr[], int left, int mid, int right) {
     int i = 0, j = 0, k = left;
 
     while (i < leftsize && j < rightsize) {
-        if (leftarray[i].money > rightarray[j].money) { // Sorting in descending order
+        if (leftarray[i].money > rightarray[j].money) { // Sorting money in descending order
             arr[k] = leftarray[i];
             i++;
         } else {
