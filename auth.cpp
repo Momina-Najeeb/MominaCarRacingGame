@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <cstdlib>
 #include <ctime>
+#include <conio.h>
 using namespace std;
 
 
@@ -49,105 +50,127 @@ public:
 };
 
 
-
+// Car class for cars attributes
 class Car {
-    string name;
-    int speed;  
-    int power;  
 public:
-    
-Car(string n, int s, int p) {
-    name = n;
-    speed = s;
-    power = p;
-}
+    string name;
+    int speed;
+    int power;
 
-    // Method to display car details
-    void car_display() {
-        cout << "Car name: " << name << " | Speed: " << speed << " km/h | Power: " << power << " HP" << endl;
+    Car(string carName, int carSpeed, int carPower){
+        name=carName;
+        speed=carSpeed;
+        power=carPower;
     }
-
-// Modify the CarSelection to show cars based on high score
-void carSelection(int score) {
-    cout << "========================================================" << endl;
-    cout << "                    CAR COLLECTION" << endl;
-    cout << "========================================================" << endl;
-    cout << endl;
-    cout << "Select Your Car:" << endl;
-    cout << endl;
-
-    // Show Elite Cars for high scores above 20
-    if(score > 20) {
-        cout << "Elite Cars for High Scorers:" << endl;
-        Car car1("Bugatti Veyron Super Sport", 410, 1200);  // High speed and power
-        car1.car_display();
-        Car car2("Koenigsegg Agera RS", 450, 1160);
-        car2.car_display();
-        Car car3("Ferrari LaFerrari", 350, 950);
-        car3.car_display();
-
-        // Provide numbers for selection
-        cout << "1. Bugatti Veyron Super Sport" << endl;
-        cout << "2. Koenigsegg Agera RS" << endl;
-        cout << "3. Ferrari LaFerrari" << endl;
+       
+    void display() const {
+        cout << "Car Name: " << name << ", Speed: " << speed << " km/h, Power: " << power << " hp" << endl;
     }
-    // Show Mid-tier Cars for scores between 10 and 20
-    else if(score > 10) {
-        cout << "Mid-tier Cars for Moderate Scorers:" << endl;
-        Car car4("Porsche 911 Turbo S", 330, 640);  // Moderate speed and power
-        car4.car_display();
-        Car car5("Nissan GT-R", 315, 565);
-        car5.car_display();
-        Car car6("Mercedes-AMG GT", 318, 523);
-        car6.car_display();
-
-        // Provide numbers for selection
-        cout << "1. Porsche 911 Turbo S" << endl;
-        cout << "2. Nissan GT-R" << endl;
-        cout << "3. Mercedes-AMG GT" << endl;
-    }
-    // Show Basic Cars for scores below or equal to 10
-    else {
-        cout << "Basic Cars for Lower Scorers:" << endl;
-        Car car7("Chevrolet Camaro SS", 250, 455);  // Basic speed and power
-        car7.car_display();
-        Car car8("Ford Mustang GT", 250, 450);
-        car8.car_display();
-        Car car9("Toyota Supra", 270, 335);
-        car9.car_display();
-
-        // Provide numbers for selection
-        cout << "1. Chevrolet Camaro SS" << endl;
-        cout << "2. Ford Mustang GT" << endl;
-        cout << "3. Toyota Supra" << endl;
-    }
-
-    // Ask for car selection by number
-    cout << endl;
-    cout << "Enter the number of the car you wish to select: ";
-    int carChoice;
-    cin >> carChoice;
-
-    string selectedCar;
-    switch (carChoice) {
-        case 1:
-            selectedCar = (score > 20) ? "Bugatti Veyron Super Sport" : (score > 10) ? "Porsche 911 Turbo S" : "Chevrolet Camaro SS";
-            break;
-        case 2:
-            selectedCar = (score > 20) ? "Koenigsegg Agera RS" : (score > 10) ? "Nissan GT-R" : "Ford Mustang GT";
-            break;
-        case 3:
-            selectedCar = (score > 20) ? "Ferrari LaFerrari" : (score > 10) ? "Mercedes-AMG GT" : "Toyota Supra";
-            break;
-        default:
-            cout << "Invalid selection!" << endl;
-            return;
-    }
-
-    cout << "You have selected: " << selectedCar << ". Let's begin the race!" << endl;
-}
-
 };
+
+
+// Node class for the linked list
+class Node {
+public:
+    Car car;
+    Node* next;
+
+    Node(Car carData) : car(carData), next(NULL) {}
+};
+
+
+// Linked list class for storing cars and displaying them
+class CarsLinkedList {
+private:
+    Node* head;
+
+public:
+    CarsLinkedList() : head(NULL) {}
+
+    // Insert function for adding cars
+    void insert(Car carData) {
+        Node* newNode = new Node(carData);
+        if (head == NULL) {
+            head = newNode;
+        } else {
+            Node* temp = head;
+            while (temp->next != NULL) {
+                temp = temp->next;
+            }
+            temp->next = newNode;
+        }
+    }
+
+    void select(int score) {
+        CarsLinkedList carList;
+        int carChoice;
+
+        // Displaying cars based on high scores of player
+        if (score > 50) {
+            cout << "Elite Cars for High Scorers:" << endl;
+            carList.insert(Car("Bugatti Veyron Super Sport", 410, 1200));
+            carList.insert(Car("Koenigsegg Agera RS", 450, 1160));
+            carList.insert(Car("Ferrari LaFerrari", 350, 950));
+        } else if (score > 20) {
+            cout << "Mid-tier Cars for Moderate Scorers:" << endl;
+            carList.insert(Car("Porsche 911 Turbo S", 330, 640));
+            carList.insert(Car("Nissan GT-R", 315, 565));
+            carList.insert(Car("Mercedes-AMG GT", 318, 523));
+        } else {
+            cout << "Basic Cars for Lower Scorers:" << endl;
+            carList.insert(Car("Chevrolet Camaro SS", 250, 455));
+            carList.insert(Car("Ford Mustang GT", 250, 450));
+            carList.insert(Car("Toyota Supra", 270, 335));
+        }
+
+        // Display car options
+        cout << "Car List:" << endl;
+        carList.display();
+        cout << "Choose your car for the game (Enter 1, 2, or 3): ";
+        cin >> carChoice;
+
+        // Validate and make the selected car available for gameplay
+        Node* temp = carList.head;
+        for (int i = 1; i < carChoice; i++) {
+            if (temp != NULL) {
+                temp = temp->next;
+            }
+        }
+
+        if (temp != NULL) {
+            cout << "You have selected the " << temp->car.name << endl;
+        } else {
+            cout << "Invalid choice, please select a valid car!" << endl;
+        }
+    }
+
+    // Display function
+    void display() const {
+        if (head == NULL) {
+            cout << "The list is empty." << endl;
+            return;
+        }
+
+        Node* temp = head;
+        int index = 1;
+        while (temp != NULL) {
+            cout << index << ". ";
+            temp->car.display();
+            temp = temp->next;
+            index++;
+        }
+    }
+
+    // Destructor to free memory
+    ~CarsLinkedList() {
+        while (head != NULL) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+};
+
 
 void updateUser(string uname, int newScore, int money) {
     ifstream inFile("user.txt");
@@ -285,12 +308,12 @@ void Merge(Player arr[], int left, int mid, int right) {
 // Custom MergeSort for Player array
 void MergeSort(Player arr[], int left, int right) {
     if(left < right) {
-        int mid = left + (right - left) / 2;
+    int mid = left + (right - left) / 2;
 
-        MergeSort(arr, left, mid);
-        MergeSort(arr, mid + 1, right);
+    MergeSort(arr, left, mid);
+    MergeSort(arr, mid + 1, right);
 
-        Merge(arr, left, mid, right);
+    Merge(arr, left, mid, right);
     }
 }
 
@@ -391,9 +414,12 @@ void gamePlay(string username) {
 
 //MAIN FUNTION
 int main() {
-    cout << "Welcome to the Car Racing Game!" << endl;
-    cout << "This is an exciting game where you race against the computer to reach the finish line first." << endl;
-    cout << "Avoid obstacles to earn money and increase your score." << endl;
+
+        cout<<endl;
+    cout << "=============================   Welcome to the Car Racing Game!   =============================" << endl;
+    cout<<endl;
+    cout << "Embark on a high-speed adventure as you race against the computer to claim victory and cross the finish line first."<<endl;
+    cout << "But it's not just about speed. Master your reflexes to dodge tricky obstacles that stand in your way!" << endl;
 
     User user;
     string username, password;
@@ -401,6 +427,7 @@ int main() {
     cout << "1. Login" << endl;
     cout << "2. Signup" << endl;
     cout << "3. Exit" << endl;
+    cout<<"Enter your choice here: ";
     int choice;
     cin >> choice;
 
@@ -435,7 +462,10 @@ int main() {
         }
     }
     else {
+        cout<<endl;
         cout << "Exiting game." << endl;
+        cout << "Have a nice day!" << endl;
+        cout << "We hope to see you soon again!" << endl;
         return 0;
     }
 
@@ -452,22 +482,27 @@ int main() {
     cin >> action;
 
     if (action == 1) {
-        // Get the high score from the file and call car selection based on that
-        ifstream file("user.txt");
-        string u, p;
-        int score, money;
-        while (file >> u >> p >> score >> money) {
-            if (u == username) {
-                Car car("", 0, 0); // Temporary car object, since carSelection doesn't rely on a specific car
-                car.carSelection(score);  // Show car selection based on high score
-                break;  // Exit the loop once we find the user
-            }
+    // Get the high score from the file and call car selection based on that
+    ifstream file("user.txt");
+    string u, p;
+    int score, money;
+    while (file >> u >> p >> score >> money) {
+        if (u == username) {
+            CarsLinkedList car; // Temporary car object, since carSelection doesn't rely on a specific car
+            car.select(score);  // Show car selection based on high score
+            
+            
+            break;  // Exit the loop once we find the user
         }
-        file.close();
-
-        // Start the game
-        gamePlay(username);
     }
+    file.close();
+    cout<<"Press any key to start the game ";
+    getch();
+
+    // Start the game
+    gamePlay(username);
+}
+
     else if (action == 2) {
         cout << endl;
         cout << "Here's how you will control your car movements: " << endl;
@@ -511,6 +546,9 @@ int main() {
     }
 
     return 0;
+
+
+
 }
 
 
