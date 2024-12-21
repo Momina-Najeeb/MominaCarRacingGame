@@ -1,46 +1,48 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <iomanip>
 using namespace std;
 
-class User{
-    private:
+
+class User {
+private:
     string username;
     string password;
 
-    public:
-    bool signup(string uname, string pass){
+public:
+    bool signup(string uname, string pass) {
         ofstream file("user.txt", ios::app);
-        if(file.is_open()){
-            file<<uname << " " << pass << " 0 0\n";    // username, password, highscore, money
+        if(file.is_open()) {
+            file << uname << " " << pass << " 0 0"<<endl; // username, password, highscore, money
             file.close();
             return true;
         }
         return false;
     }
 
-    bool login(string uname, string pass){
+    bool login(string uname, string pass) {
         ifstream file("user.txt");
-        if(!file.is_open()){
-            cout<<"❗Unable to open file"<<endl;
+        if(!file.is_open()) {
+            cout << "Unable to open file" << endl;
             return false;
         }
         string u, p;
-        while(file >> u >> p){
-            if(u==uname && p==password){
-                username=uname;
-                password=pass;
+        while (file >> u >> p) {
+            if(u == uname && p == pass) {
+                username = uname;
+                password = pass;
                 file.close();
                 return true;
             }
         }
-        cout<<"❗Error: User not found or incorrect password! "<<endl;
+        cout << "Error: User not found or incorrect password!" << endl;
         file.close();
         return false;
     }
 
     string getUsername() {
-        return username;
+    return username;
     }
 };
 
@@ -65,9 +67,9 @@ Track() {
 
 void addNode(string content) {
     Node* newNode = new Node(content);
-    if (!head) {
+    if(!head) {
         head = newNode;
-    } else {
+    } else{
         Node* temp = head;
         while (temp->next) {
             temp = temp->next;
@@ -113,7 +115,7 @@ Car(string n, int s, int p) {
         cout << endl;
 
         // Best cars for ranks greater than or equal to 10
-        if (rank >= 10) {
+        if(rank >= 10) {
             cout << "Best Cars for High Ranking Players:" << endl;
             Car car1("Bugatti Veyron Super Sport", 410, 1200);  // High speed and power
             car1.car_display();
@@ -123,7 +125,7 @@ Car(string n, int s, int p) {
             car3.car_display();
         }
         // Better cars for ranks greater than or equal to 5 but less than 10
-        else if (rank >= 5) {
+        else if(rank >= 5) {
             cout << "Better Cars for Mid Ranking Players:" << endl;
             Car car4("Porsche 911 Turbo S", 330, 640);  // Moderate speed and power
             car4.car_display();
@@ -133,7 +135,7 @@ Car(string n, int s, int p) {
             car6.car_display();
         }
         // Good cars for ranks less than 5
-        else {
+        else{
             cout << "Good Cars for Lower Ranking Players:" << endl;
             Car car7("Chevrolet Camaro SS", 250, 455);  // Basic speed and power
             car7.car_display();
@@ -147,13 +149,13 @@ Car(string n, int s, int p) {
 
 void updateUser(string uname, int newScore, int money) {
     ifstream inFile("user.txt");
-    if (!inFile) {
+    if(!inFile) {
         cout << "Error opening user.txt file!" << endl;
         return;
     }
 
     ofstream outFile("temp.txt");
-    if (!outFile) {
+    if(!outFile) {
         cout << "Error opening temp.txt file!" << endl;
         return;
     }
@@ -162,11 +164,11 @@ void updateUser(string uname, int newScore, int money) {
     int score, cash;
 
     while (inFile >> u >> p >> score >> cash) {
-        if (u == uname) {
+        if(u == uname) {
             score = max(score, newScore);
             cash += money;
         }
-        outFile << u << " " << p << " " << score << " " << cash << "\n";
+        outFile << u << " " << p << " " << score << " " << cash << ""<<endl;
     }
 
     inFile.close();
@@ -175,7 +177,7 @@ void updateUser(string uname, int newScore, int money) {
     rename("temp.txt", "user.txt");
 }
 
-// You can implement a similar BST for players, sorting based on score
+// Implementing BST to sort scores
 struct PlayerNode {
     string username;
     int score;
@@ -186,22 +188,22 @@ struct PlayerNode {
 };
 
 PlayerNode* insertPlayerBST(PlayerNode* root, const string& username, int score) {
-    if (root == NULL) {
+    if(root == NULL) {
         return new PlayerNode(username, score);
     }
 
-    if (score < root->score) {
+    if(score < root->score) {
         root->left = insertPlayerBST(root->left, username, score);
-    } else {
+    } else{
         root->right = insertPlayerBST(root->right, username, score);
     }
     return root;
 }
 
 void inorderPlayerBST(PlayerNode* root) {
-    if (root != NULL) {
+    if(root != NULL) {
         inorderPlayerBST(root->left);
-        cout << root->username << " | Score: " << root->score << "\n";
+        cout << root->username << " | Score: " << root->score << ""<<endl;
         inorderPlayerBST(root->right);
     }
 }
@@ -217,8 +219,8 @@ public:
 // Function to read players from file into an array
 int readPlayersFromFile(Player players[], int maxPlayers) {
     ifstream file("user.txt");
-    if (!file) {
-        cout << "❗ Unable to open file!" << endl;
+    if(!file) {
+        cout << "Unable to open file!" << endl;
         return 0;
     }
 
@@ -256,10 +258,10 @@ void Merge(Player arr[], int left, int mid, int right) {
     int i = 0, j = 0, k = left;
 
     while (i < leftsize && j < rightsize) {
-        if (leftarray[i].money > rightarray[j].money) { // Sorting money in descending order
+        if(leftarray[i].money > rightarray[j].money) { 
             arr[k] = leftarray[i];
             i++;
-        } else {
+        } else{
             arr[k] = rightarray[j];
             j++;
         }
@@ -280,7 +282,7 @@ void Merge(Player arr[], int left, int mid, int right) {
 
 // Custom MergeSort for Player array
 void MergeSort(Player arr[], int left, int right) {
-    if (left < right) {
+    if(left < right) {
         int mid = left + (right - left) / 2;
 
         MergeSort(arr, left, mid);
@@ -294,101 +296,108 @@ void MergeSort(Player arr[], int left, int right) {
 void displayMoneyLeaderboard(Player players[], int count) {
     MergeSort(players, 0, count - 1);
 
-    cout << "============ LEADERBOARD (MONEY) ============\n";
-    cout << "Username      Money\n"; 
+    cout << "============ LEADERBOARD (MONEY) ============"<<endl;
+    cout << left << setw(20) << "Username" << setw(10) << "Money" << endl; 
     for (int i = 0; i < count; i++) {
-        cout << players[i].username << "          $" << players[i].money << "\n";
+        cout << left << setw(20) << players[i].username << "$" << players[i].money << endl;
     }
 }
 
+
 void displayScoreLeaderboard(PlayerNode* root) {
-    if (root != NULL) {
+    if(root != NULL) {
         displayScoreLeaderboard(root->right); // Right subtree for higher scores
-        cout << root->username << "          " << root->score << "\n";
+        cout << left << setw(20) << root->username << setw(10) << root->score << endl;
         displayScoreLeaderboard(root->left);  // Left subtree for lower scores
     }
 }
 
-
-
-
-
+//MAIN FUNTION
 int main() {
     cout << "Welcome to the Car Racing Game!" << endl;
-    cout << "This is an exciting game where you race against the computer to reach the finish line first.\n";
-    cout << "Avoid obstacles to earn money and increase your score.\n";
+    cout << "This is an exciting game where you race against the computer to reach the finish line first."<<endl;
+    cout << "Avoid obstacles to earn money and increase your score."<<endl;
 
     User user;
     string username, password;
 
-    cout << "1. Login\n";
-    cout << "2. Signup\n";
-    cout << "3. Exit\n";
+    cout << "1. Login"<<endl;
+    cout << "2. Signup"<<endl;
+    cout << "3. Exit"<<endl;
     int choice;
     cin >> choice;
 
-    if (choice == 1) {
+    if(choice == 1) {
         cout << "Enter username: ";
         cin >> username;
         cout << "Enter password: ";
         cin >> password;
-        if (!user.login(username, password)) {
-            cout << "Login failed. Exiting game.\n";
+        if(!user.login(username, password)) {
+            cout << "Login failed. Exiting game."<<endl;
             return 0;
         }
-    } else if (choice == 2) {
+    } 
+    else if(choice == 2) {
         cout << "Enter username: ";
         cin >> username;
         cout << "Enter password: ";
         cin >> password;
-        if (!user.signup(username, password)) {
-            cout << "Signup failed. Exiting game.\n";
+        if(!user.signup(username, password)) {
+            cout << "Signup failed. Exiting game."<<endl;
             return 0;
         }
-        cout << "Signup successful! You can now log in.\n";
-    } else {
-        cout << "Exiting game.\n";
+        cout << "Signup successful! You can now log in."<<endl;
+    } 
+    else{
+        cout << "Exiting game."<<endl;
         return 0;
     }
 
-    cout << "Welcome back, " << user.getUsername() << "!\n";
-    cout << "Choose an option:\n";
-    cout << "1. Play\n";
-    cout << "2. How to play\n";
-    cout << "3. Leaderboard\n";
-    cout << "4. Exit\n";
+    cout << "Welcome back, " << user.getUsername() << "!"<<endl;
+    cout << "Choose an option:"<<endl;
+    cout << "1. Play"<<endl;
+    cout << "2. How to play"<<endl;
+    cout << "3. Leaderboard"<<endl;
+    cout << "4. Exit"<<endl;
 
     int action;
     cin >> action;
 
-    if (action == 1) {
+    if(action == 1) {
         // game logic to be implemented
-    } else if (action == 2) {
-        cout << "Use 'a' to move left, 'd' to move right, 'w' to move up, and 'x' to exit.\n";
-    } else if (action == 3) {
-    const int MAX_PLAYERS = 100; // Maximum number of players
-    Player players[MAX_PLAYERS];
-    int count = readPlayersFromFile(players, MAX_PLAYERS); // Pass the array and max players
+    } 
+    else if(action == 2) {
+        cout << "Use 'a' to move left, 'd' to move right, 'w' to move up, and 'x' to exit."<<endl;
+    } 
+    else if(action == 3) {
+        const int MAX_PLAYERS = 100;                           
+        Player players[MAX_PLAYERS];
+        int count = readPlayersFromFile(players, MAX_PLAYERS); 
 
-    PlayerNode* root = NULL;
-    for (int i = 0; i < count; i++) {
-        root = insertPlayerBST(root, players[i].username, players[i].score);
-    }
+        PlayerNode* root = NULL;
+        for (int i = 0; i < count; i++) {
+            root = insertPlayerBST(root, players[i].username, players[i].score);
+        }
     
 
-    if (count > 0) {
-        displayMoneyLeaderboard(players, count); // Call leaderboard display
-        cout << "============ LEADERBOARD (SCORES) ============\n";
-        cout << "Username      Score\n";
+    if(count > 0) {
+        //Displaying leaderboard on money
+        displayMoneyLeaderboard(players, count);
+        cout << "============ LEADERBOARD (SCORES) ============"<<endl;
+        cout << "Username      Score"<<endl;
+
+        //Displaying leaderboard on money
         displayScoreLeaderboard(root);
-    } else {
-        cout << "No players found.\n";
+    } 
+    else{
+        cout << "No players found."<<endl;
     }
-
-    
 }
- else {
-        cout << "Exiting game.\n";
+
+else{
+        cout <<"Exiting game...."<<endl;
+        cout<<"Have a nice day!"<<endl;
+        cout<<"Hoping to see you soon again!"<<endl;
     }
 
     return 0;
