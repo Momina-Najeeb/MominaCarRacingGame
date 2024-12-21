@@ -2,6 +2,8 @@
 #include <fstream>
 #include <string>
 #include <iomanip>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 
@@ -46,47 +48,7 @@ public:
     }
 };
 
-struct Node{
-    string content;
-    Node* next;
 
-    Node(string val){
-        content=val;
-        next=NULL;
-    }
-};
-
-class Track {
-private:
-Node* head;
-
-public:
-Track() {
-    head = NULL;
-}
-
-void addNode(string content) {
-    Node* newNode = new Node(content);
-    if(!head) {
-        head = newNode;
-    } else{
-        Node* temp = head;
-        while (temp->next) {
-            temp = temp->next;
-        }
-        temp->next = newNode;
-    }
-}
-
-void displayTrack() {
-    Node* temp = head;
-    int position = 1;
-    while (temp) {
-        cout << "Position " << position++ << ": " << temp->content << endl;
-        temp = temp->next;
-    }
-}
-};
 
 class Car {
     string name;
@@ -105,46 +67,86 @@ Car(string n, int s, int p) {
         cout << "Car name: " << name << " | Speed: " << speed << " km/h | Power: " << power << " HP" << endl;
     }
 
-    // Method to display car selection menu based on player rank
-    void carSelection(int rank) {
-        cout << "========================================================" << endl;
-        cout << "                    CAR COLLECTION" << endl;
-        cout << "========================================================" << endl;
-        cout << endl;
-        cout << "Select Your Car:" << endl;
-        cout << endl;
+// Modify the CarSelection to show cars based on high score
+void carSelection(int score) {
+    cout << "========================================================" << endl;
+    cout << "                    CAR COLLECTION" << endl;
+    cout << "========================================================" << endl;
+    cout << endl;
+    cout << "Select Your Car:" << endl;
+    cout << endl;
 
-        // Best cars for ranks greater than or equal to 10
-        if(rank >= 10) {
-            cout << "Best Cars for High Ranking Players:" << endl;
-            Car car1("Bugatti Veyron Super Sport", 410, 1200);  // High speed and power
-            car1.car_display();
-            Car car2("Koenigsegg Agera RS", 450, 1160);
-            car2.car_display();
-            Car car3("Ferrari LaFerrari", 350, 950);
-            car3.car_display();
-        }
-        // Better cars for ranks greater than or equal to 5 but less than 10
-        else if(rank >= 5) {
-            cout << "Better Cars for Mid Ranking Players:" << endl;
-            Car car4("Porsche 911 Turbo S", 330, 640);  // Moderate speed and power
-            car4.car_display();
-            Car car5("Nissan GT-R", 315, 565);
-            car5.car_display();
-            Car car6("Mercedes-AMG GT", 318, 523);
-            car6.car_display();
-        }
-        // Good cars for ranks less than 5
-        else{
-            cout << "Good Cars for Lower Ranking Players:" << endl;
-            Car car7("Chevrolet Camaro SS", 250, 455);  // Basic speed and power
-            car7.car_display();
-            Car car8("Ford Mustang GT", 250, 450);
-            car8.car_display();
-            Car car9("Toyota Supra", 270, 335);
-            car9.car_display();
-        }
+    // Show Elite Cars for high scores above 20
+    if(score > 20) {
+        cout << "Elite Cars for High Scorers:" << endl;
+        Car car1("Bugatti Veyron Super Sport", 410, 1200);  // High speed and power
+        car1.car_display();
+        Car car2("Koenigsegg Agera RS", 450, 1160);
+        car2.car_display();
+        Car car3("Ferrari LaFerrari", 350, 950);
+        car3.car_display();
+
+        // Provide numbers for selection
+        cout << "1. Bugatti Veyron Super Sport" << endl;
+        cout << "2. Koenigsegg Agera RS" << endl;
+        cout << "3. Ferrari LaFerrari" << endl;
     }
+    // Show Mid-tier Cars for scores between 10 and 20
+    else if(score > 10) {
+        cout << "Mid-tier Cars for Moderate Scorers:" << endl;
+        Car car4("Porsche 911 Turbo S", 330, 640);  // Moderate speed and power
+        car4.car_display();
+        Car car5("Nissan GT-R", 315, 565);
+        car5.car_display();
+        Car car6("Mercedes-AMG GT", 318, 523);
+        car6.car_display();
+
+        // Provide numbers for selection
+        cout << "1. Porsche 911 Turbo S" << endl;
+        cout << "2. Nissan GT-R" << endl;
+        cout << "3. Mercedes-AMG GT" << endl;
+    }
+    // Show Basic Cars for scores below or equal to 10
+    else {
+        cout << "Basic Cars for Lower Scorers:" << endl;
+        Car car7("Chevrolet Camaro SS", 250, 455);  // Basic speed and power
+        car7.car_display();
+        Car car8("Ford Mustang GT", 250, 450);
+        car8.car_display();
+        Car car9("Toyota Supra", 270, 335);
+        car9.car_display();
+
+        // Provide numbers for selection
+        cout << "1. Chevrolet Camaro SS" << endl;
+        cout << "2. Ford Mustang GT" << endl;
+        cout << "3. Toyota Supra" << endl;
+    }
+
+    // Ask for car selection by number
+    cout << endl;
+    cout << "Enter the number of the car you wish to select: ";
+    int carChoice;
+    cin >> carChoice;
+
+    string selectedCar;
+    switch (carChoice) {
+        case 1:
+            selectedCar = (score > 20) ? "Bugatti Veyron Super Sport" : (score > 10) ? "Porsche 911 Turbo S" : "Chevrolet Camaro SS";
+            break;
+        case 2:
+            selectedCar = (score > 20) ? "Koenigsegg Agera RS" : (score > 10) ? "Nissan GT-R" : "Ford Mustang GT";
+            break;
+        case 3:
+            selectedCar = (score > 20) ? "Ferrari LaFerrari" : (score > 10) ? "Mercedes-AMG GT" : "Toyota Supra";
+            break;
+        default:
+            cout << "Invalid selection!" << endl;
+            return;
+    }
+
+    cout << "You have selected: " << selectedCar << ". Let's begin the race!" << endl;
+}
+
 };
 
 void updateUser(string uname, int newScore, int money) {
@@ -312,97 +314,204 @@ void displayScoreLeaderboard(PlayerNode* root) {
     }
 }
 
+void gamePlay(string username) {
+    srand(time(0));
+    const int TRACK_LENGTH = 20;
+    char track[TRACK_LENGTH];
+
+    for (int i = 0; i < TRACK_LENGTH; i++) {
+        track[i] = ' ';
+    }
+
+    int userPosition = 0;
+    int computerPosition = 0;
+    int obstaclePosition = rand() % TRACK_LENGTH;
+
+    int score = 0;
+    int money = 0;
+
+    while (true) {
+        system("cls"); // Change 'clear' to 'cls' for Windows
+
+        track[userPosition] = 'u';
+        track[computerPosition] = 'c';
+        track[obstaclePosition] = 'x';
+
+        for (int i = 0; i < TRACK_LENGTH; i++) {
+            cout << track[i];
+        }
+        cout << endl;
+
+        track[userPosition] = ' ';
+        track[computerPosition] = ' ';
+        track[obstaclePosition] = ' ';
+
+        cout << "Press 'd' to move forward: ";
+        char input;
+        cin >> input;
+
+        if (input == 'd') {
+            userPosition++;
+        } else {
+            cout << "Invalid input!" << endl;
+            continue;
+        }
+
+        computerPosition += rand() % 2;
+        obstaclePosition = (obstaclePosition + 1) % TRACK_LENGTH;
+
+        if (userPosition == TRACK_LENGTH - 1) {
+            cout << "You win!" << endl;
+            score += 10;
+            money += 20;
+            break;
+        }
+
+        if (computerPosition == TRACK_LENGTH - 1) {
+            cout << "Computer wins!" << endl;
+            break;
+        }
+
+        if (userPosition == obstaclePosition) {
+            cout << "Game over! You hit an obstacle." << endl;
+            break;
+        }
+
+        if (userPosition > obstaclePosition) {
+            score += 2;
+            money += 5;
+        }
+    }
+
+    cout << "Your final score: " << score << endl;
+    cout << "Your total money: $" << money << endl;
+    updateUser(username, score, money);
+}
+
+
 //MAIN FUNTION
 int main() {
     cout << "Welcome to the Car Racing Game!" << endl;
-    cout << "This is an exciting game where you race against the computer to reach the finish line first."<<endl;
-    cout << "Avoid obstacles to earn money and increase your score."<<endl;
+    cout << "This is an exciting game where you race against the computer to reach the finish line first." << endl;
+    cout << "Avoid obstacles to earn money and increase your score." << endl;
 
     User user;
     string username, password;
 
-    cout << "1. Login"<<endl;
-    cout << "2. Signup"<<endl;
-    cout << "3. Exit"<<endl;
+    cout << "1. Login" << endl;
+    cout << "2. Signup" << endl;
+    cout << "3. Exit" << endl;
     int choice;
     cin >> choice;
 
-    if(choice == 1) {
+    if (choice == 1) {
         cout << "Enter username: ";
         cin >> username;
         cout << "Enter password: ";
         cin >> password;
-        if(!user.login(username, password)) {
-            cout << "Login failed. Exiting game."<<endl;
+        if (!user.login(username, password)) {
+            cout << "Login failed. Exiting game." << endl;
             return 0;
         }
-    } 
-    else if(choice == 2) {
+    }
+    else if (choice == 2) {
         cout << "Enter username: ";
         cin >> username;
         cout << "Enter password: ";
         cin >> password;
-        if(!user.signup(username, password)) {
-            cout << "Signup failed. Exiting game."<<endl;
+        if (!user.signup(username, password)) {
+            cout << "Signup failed. Exiting game." << endl;
             return 0;
         }
-        cout << "Signup successful! You can now log in."<<endl;
-    } 
-    else{
-        cout << "Exiting game."<<endl;
+        cout << "Signup successful! You can now log in." << endl;
+        cout << endl;
+        cout << "Enter username: ";
+        cin >> username;
+        cout << "Enter password: ";
+        cin >> password;
+        if (!user.login(username, password)) {
+            cout << "Login failed. Exiting game." << endl;
+            return 0;
+        }
+    }
+    else {
+        cout << "Exiting game." << endl;
         return 0;
     }
 
-    cout << "Welcome back, " << user.getUsername() << "!"<<endl;
-    cout << "Choose an option:"<<endl;
-    cout << "1. Play"<<endl;
-    cout << "2. How to play"<<endl;
-    cout << "3. Leaderboard"<<endl;
-    cout << "4. Exit"<<endl;
+    cout << endl;
+    cout << "Welcome back " << user.getUsername() << "!" << endl;
+    cout << "Choose an option:" << endl;
+    cout << "1. Play" << endl;
+    cout << "2. How to play" << endl;
+    cout << "3. Leaderboard" << endl;
+    cout << "4. Exit" << endl;
+    cout << "Enter your choice here: ";
 
     int action;
     cin >> action;
 
-    if(action == 1) {
-        // game logic to be implemented
-    } 
-    else if(action == 2) {
-        cout << "Use 'a' to move left, 'd' to move right, 'w' to move up, and 'x' to exit."<<endl;
-    } 
-    else if(action == 3) {
-        const int MAX_PLAYERS = 100;                           
+    if (action == 1) {
+        // Get the high score from the file and call car selection based on that
+        ifstream file("user.txt");
+        string u, p;
+        int score, money;
+        while (file >> u >> p >> score >> money) {
+            if (u == username) {
+                Car car("", 0, 0); // Temporary car object, since carSelection doesn't rely on a specific car
+                car.carSelection(score);  // Show car selection based on high score
+                break;  // Exit the loop once we find the user
+            }
+        }
+        file.close();
+
+        // Start the game
+        gamePlay(username);
+    }
+    else if (action == 2) {
+        cout << endl;
+        cout << "Here's how you will control your car movements: " << endl;
+        cout << "Press 'a' to move left" << endl;
+        cout << "Press 'd' to move right" << endl;
+        cout << "Press 'w' to move up" << endl;
+        cout << "Press 'x' to exit." << endl;
+        cout << "Make sure to stay away from the obstacles denoted as x on the track. Hitting it will end the game and you will lose. Passing it successfully earns you two points and 5$ money!" << endl;
+        cout << "Be the first one at the finish line to win! All the best!" << endl;
+    }
+    else if (action == 3) {
+        const int MAX_PLAYERS = 100;
         Player players[MAX_PLAYERS];
-        int count = readPlayersFromFile(players, MAX_PLAYERS); 
+        int count = readPlayersFromFile(players, MAX_PLAYERS);
 
         PlayerNode* root = NULL;
         for (int i = 0; i < count; i++) {
             root = insertPlayerBST(root, players[i].username, players[i].score);
         }
-    
 
-    if(count > 0) {
-        //Displaying leaderboard on money
-        displayMoneyLeaderboard(players, count);
-        cout << "============ LEADERBOARD (SCORES) ============"<<endl;
-        cout << "Username      Score"<<endl;
+        if (count > 0) {
+            // Displaying leaderboard for money
+            displayMoneyLeaderboard(players, count);
+            cout << endl;
 
-        //Displaying leaderboard on money
-        displayScoreLeaderboard(root);
-    } 
-    else{
-        cout << "No players found."<<endl;
+            cout << "============ LEADERBOARD (SCORES) ============" << endl;
+            cout << "Username      Score" << endl;
+            // Displaying leaderboard for high-scores
+            displayScoreLeaderboard(root);
+        }
+        else {
+            cout << "No players found." << endl;
+        }
     }
-}
-
-else{
-        cout <<"Exiting game...."<<endl;
-        cout<<"Have a nice day!"<<endl;
-        cout<<"Hoping to see you soon again!"<<endl;
+    else {
+        cout << endl;
+        cout << "Exiting game...." << endl;
+        cout << "Have a nice day!" << endl;
+        cout << "We hope to see you soon again!" << endl;
+        cout << endl;
     }
 
     return 0;
 }
-
 
 
 
