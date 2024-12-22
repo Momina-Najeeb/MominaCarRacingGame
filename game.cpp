@@ -15,7 +15,7 @@ private:
 
 public:
     bool signup(string uname, string pass) {
-        ofstream file("user.txt", ios::app);
+        ofstream file("users.txt", ios::app);
         if(file.is_open()) {
             file << uname << " " << pass << " 0 0"<<endl; // username, password, highscore, money
             file.close();
@@ -25,7 +25,7 @@ public:
     }
 
     bool login(string uname, string pass) {
-        ifstream file("user.txt");
+        ifstream file("users.txt");
         if(!file.is_open()) {
             cout << "Unable to open file" << endl;
             return false;
@@ -204,9 +204,9 @@ void printTrack(int userPos, int userLane, int compPos, int compLane, int obstac
 
 //Updating players's stats
 void updateUser(string uname, int newScore, int money) {
-    ifstream inFile("user.txt");
+    ifstream inFile("users.txt");
     if(!inFile) {
-        cout << "Error opening user.txt file!" << endl;
+        cout << "Error opening users.txt file!" << endl;
         return;
     }
 
@@ -229,8 +229,8 @@ void updateUser(string uname, int newScore, int money) {
 
     inFile.close();
     outFile.close();
-    remove("user.txt");
-    rename("temp.txt", "user.txt");
+    remove("users.txt");
+    rename("temp.txt", "users.txt");
 }
 
 // Implementing BST to sort scores
@@ -274,7 +274,7 @@ public:
 
 // Function to read players from file into an array
 int readPlayersFromFile(Player players[], int maxPlayers) {
-    ifstream file("user.txt");
+    ifstream file("users.txt");
     if(!file) {
         cout << "Unable to open file!" << endl;
         return 0;
@@ -399,7 +399,7 @@ void gamePlay(string username){
             }
         }
 
-        // Move computer randomy froward
+        // Move computer randomly froward
         compPos += rand() % 2;
 
         // Check collision with obstacle
@@ -414,8 +414,8 @@ void gamePlay(string username){
         // Check for the winner
         if (userPos >= TRACK_LENGTH) {
             cout << "Congratulations! You win!" << endl;
-            score+=5;
-            money+=10;
+            score=score+5;
+            money=money+10;
             break;
         } else if (compPos >= TRACK_LENGTH) {
             cout << "Computer wins! Better luck next time." << endl;
@@ -581,18 +581,18 @@ int main() {
         cout << "Enter your choice here: ";
         cin >> action;
 
-        if (action >= 1 && action <= 6) {
-            break;
-        } else {
-            cout << "Invalid choice. Please enter a valid option (1, 2, 3, or 4)." << endl;
-        }
-    }
+        // if (action >= 1 && action <= 6) {
+        //     break;
+        // } else {
+        //     cout << "Invalid choice. Please enter a valid option (1, 2, 3, or 4)." << endl;
+        // }
+    
 
     //Play the Game
     if (action == 1) {
 
     // Get high score for car selection menu
-    ifstream file("user.txt");
+    ifstream file("users.txt");
     string u, p;
     int score, money;
     while (file >> u >> p >> score >> money) {
@@ -648,7 +648,7 @@ int main() {
     }
 
     else if(action == 4){
-        ifstream file("user.txt");
+        ifstream file("users.txt");
 
     if (!file.is_open()) {
         cout << "Error opening file! Please check the file path." << endl;
@@ -702,14 +702,18 @@ int main() {
             carList.display();
     }
 
-    else {
+    else if(action==6){
         cout << endl;
         cout << "Exiting game....." << endl;
         cout << "Have a nice day!" << endl;
         cout << "We hope to see you soon again!" << endl;
         cout << endl;
+        break;
     }
-
+    else{
+        cout<<"Please enter a valid choice "<<endl;
+    }
+}
     return 0;
 
 }
