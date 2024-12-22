@@ -5,9 +5,10 @@
 #include <cstdlib>
 #include <ctime>
 #include <conio.h>
+#include <windows.h>
 using namespace std;
 
-
+//User class for user authorization
 class User {
 private:
     string username;
@@ -69,7 +70,7 @@ public:
 };
 
 
-// Node class for the linked list
+// Node class for the linked list of cars
 class Node {
 public:
     Car car;
@@ -107,25 +108,28 @@ public:
 
         // Displaying cars based on high scores of player
         if (score > 50) {
+            cout<<endl;
             cout << "Elite Cars for High Scorers:" << endl;
             carList.insert(Car("Bugatti Veyron Super Sport", 410, 1200));
             carList.insert(Car("Koenigsegg Agera RS", 450, 1160));
             carList.insert(Car("Ferrari LaFerrari", 350, 950));
         } else if (score > 20) {
+            cout<<endl;
             cout << "Mid-tier Cars for Moderate Scorers:" << endl;
             carList.insert(Car("Porsche 911 Turbo S", 330, 640));
             carList.insert(Car("Nissan GT-R", 315, 565));
             carList.insert(Car("Mercedes-AMG GT", 318, 523));
         } else {
+            cout<<endl;
             cout << "Basic Cars for Lower Scorers:" << endl;
             carList.insert(Car("Chevrolet Camaro SS", 250, 455));
             carList.insert(Car("Ford Mustang GT", 250, 450));
             carList.insert(Car("Toyota Supra", 270, 335));
         }
 
-        // Display car options
         cout << "Car List:" << endl;
         carList.display();
+        cout<<endl;
         cout << "Choose your car for the game (Enter 1, 2, or 3): ";
         cin >> carChoice;
 
@@ -144,7 +148,7 @@ public:
         }
     }
 
-    // Display function
+    // Display function for cars stored in Linked List
     void display() const {
         if (head == NULL) {
             cout << "The list is empty." << endl;
@@ -161,7 +165,7 @@ public:
         }
     }
 
-    // Destructor to free memory
+    // Destructor
     ~CarsLinkedList() {
         while (head != NULL) {
             Node* temp = head;
@@ -171,7 +175,30 @@ public:
     }
 };
 
+const int TRACK_LENGTH = 50; // Fixed track length
+const int TRACK_WIDTH = 5;  // Width of the track
+const char OBSTACLE = 'X';
 
+//Printing racing track
+void printTrack(int userPos, int userLane, int compPos, int compLane, int obstaclePos, int obstacleLane) {
+    system("cls");
+    for (int i = 0; i < TRACK_WIDTH; i++) {
+        for (int j = 0; j <= TRACK_LENGTH; j++) {
+            if (j == userPos && i == userLane) {
+                cout << "U"; // User's car
+            } else if (j == compPos && i == compLane) {
+                cout << "C"; // Computer's car
+            } else if (j == obstaclePos && i == obstacleLane) {
+                cout << OBSTACLE; // Obstacle
+            } else {
+                cout << "."; // Empty track
+            }
+        }
+        cout << endl;
+    }
+}
+
+//Updating players's stats
 void updateUser(string uname, int newScore, int money) {
     ifstream inFile("user.txt");
     if(!inFile) {
@@ -328,96 +355,83 @@ void displayMoneyLeaderboard(Player players[], int count) {
     }
 }
 
-
+// Displaying Score Leaderboard
 void displayScoreLeaderboard(PlayerNode* root) {
     if(root != NULL) {
-        displayScoreLeaderboard(root->right); // Right subtree for higher scores
+        displayScoreLeaderboard(root->right); 
         cout << left << setw(20) << root->username << setw(10) << root->score << endl;
-        displayScoreLeaderboard(root->left);  // Left subtree for lower scores
+        displayScoreLeaderboard(root->left);  
     }
 }
 
-void gamePlay(string username) {
+
+void gamePlay(string username){
     srand(time(0));
-    const int TRACK_LENGTH = 20;
-    char track[TRACK_LENGTH];
 
-    for (int i = 0; i < TRACK_LENGTH; i++) {
-        track[i] = ' ';
-    }
-
-    int userPosition = 0;
-    int computerPosition = 0;
-    int obstaclePosition = rand() % TRACK_LENGTH;
-
-    int score = 0;
-    int money = 0;
+    int userPos = 0, compPos = 0;
+    int userLane = TRACK_WIDTH / 2, compLane = TRACK_WIDTH / 2 + 1;
+    int obstaclePos = rand() % TRACK_LENGTH; // Initial obstacle position
+    int obstacleLane = rand() % TRACK_WIDTH; // Initial obstacle lane
+    int score=0;
+    int money=0;
 
     while (true) {
-        system("cls"); // Change 'clear' to 'cls' for Windows
+        // Move obstacle randomly sideways and forward/backward
+        obstaclePos += rand() % 3 - 1;
+        obstacleLane += rand() % 3 - 1;
+        if (obstaclePos < 0) obstaclePos = 0;
+        if (obstaclePos > TRACK_LENGTH) obstaclePos = TRACK_LENGTH;
+        if (obstacleLane < 0) obstacleLane = 0;
+        if (obstacleLane >= TRACK_WIDTH) obstacleLane = TRACK_WIDTH - 1;
 
-        track[userPosition] = 'u';
-        track[computerPosition] = 'c';
-        track[obstaclePosition] = 'x';
-
-        for (int i = 0; i < TRACK_LENGTH; i++) {
-            cout << track[i];
-        }
-        cout << endl;
-
-        track[userPosition] = ' ';
-        track[computerPosition] = ' ';
-        track[obstaclePosition] = ' ';
-
-        cout << "Press 'd' to move forward: ";
-        char input;
-        cin >> input;
-
-        if (input == 'd') {
-            userPosition++;
-        } else {
-            cout << "Invalid input!" << endl;
-            continue;
+        // Check for user input
+        if (_kbhit()) {
+            char key = _getch();
+            if (key == 'a' && userLane > 0) {
+                userLane--;
+            } else if (key == 'd' && userLane < TRACK_WIDTH - 1) {
+                userLane++;
+            } else if (key == 'w') {
+                userPos++;
+            }
         }
 
-        computerPosition += rand() % 2;
-        obstaclePosition = (obstaclePosition + 1) % TRACK_LENGTH;
+        // Move computer randomy froward
+        compPos += rand() % 2;
 
-        if (userPosition == TRACK_LENGTH - 1) {
-            cout << "You win!" << endl;
-            score += 10;
-            money += 20;
+        // Check collision with obstacle
+        if (userPos == obstaclePos && userLane == obstacleLane) {
+            cout << "You hit an obstacle! Game Over." << endl;
             break;
         }
 
-        if (computerPosition == TRACK_LENGTH - 1) {
-            cout << "Computer wins!" << endl;
+        // Print the track
+        printTrack(userPos, userLane, compPos, compLane, obstaclePos, obstacleLane);
+
+        // Check for the winner
+        if (userPos >= TRACK_LENGTH) {
+            cout << "Congratulations! You win!" << endl;
+            score+=5;
+            money+=10;
+            break;
+        } else if (compPos >= TRACK_LENGTH) {
+            cout << "Computer wins! Better luck next time." << endl;
             break;
         }
 
-        if (userPosition == obstaclePosition) {
-            cout << "Game over! You hit an obstacle." << endl;
-            break;
-        }
+        updateUser(username, score, money);
 
-        if (userPosition > obstaclePosition) {
-            score += 2;
-            money += 5;
-        }
+        // Delay for smoother gameplay
+        Sleep(100); 
     }
-
-    cout << "Your final score: " << score << endl;
-    cout << "Your total money: $" << money << endl;
-    updateUser(username, score, money);
 }
-
-
 
 //MAIN FUNTION
 int main() {
 
         cout<<endl;
-    cout << "=============================   Welcome to the Car Racing Game!   =============================" << endl;
+    cout << "=============================_/'''|_  Welcome to the Car Racing Game!  _/'''|_ =============================" << endl;
+    cout<<"                            |_.___._|                                 |_.___._|"<<endl;
     cout<<endl;
     cout << "Embark on a high-speed adventure as you race against the computer to claim victory and cross the finish line first."<<endl;
     cout << "But it's not just about speed. Master your reflexes to dodge tricky obstacles that stand in your way!" << endl;
@@ -498,10 +512,10 @@ int main() {
     cout<<"Press any key to start the game ";
     getch();
 
-    // Start the game
+    //Start the game
     gamePlay(username);
-}
-    
+    }
+
     else if (action == 2) {
     //Displaying How to Play of the game
         cout << endl;
@@ -524,14 +538,14 @@ int main() {
         }
 
         if (count > 0) {
-            // Displaying leaderboard for money
-            displayMoneyLeaderboard(players, count);
-            cout << endl;
+    // Displaying leaderboard for money
+        displayMoneyLeaderboard(players, count);
+        cout << endl;
 
-            cout << "============ LEADERBOARD (SCORES) ============" << endl;
-            cout << "Username      Score" << endl;
-            // Displaying leaderboard for high-scores
-            displayScoreLeaderboard(root);
+        cout << "============ LEADERBOARD (SCORES) ============" << endl;
+        cout << "Username      Score" << endl;
+    // Displaying leaderboard for high-scores
+        displayScoreLeaderboard(root);
         }
         else {
             cout << "No players found." << endl;
