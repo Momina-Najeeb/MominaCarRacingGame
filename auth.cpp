@@ -704,7 +704,7 @@ int main() {
 
     else {
         cout << endl;
-        cout << "Exiting game...." << endl;
+        cout << "Exiting game....." << endl;
         cout << "Have a nice day!" << endl;
         cout << "We hope to see you soon again!" << endl;
         cout << endl;
